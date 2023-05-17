@@ -1,49 +1,98 @@
 package ru.kata.spring.boot_security.demo.models;
 
-//import javax.persistence.*;
-//import javax.validation.constraints.Email;
-//import javax.validation.constraints.Min;
-//import javax.validation.constraints.NotEmpty;
-//import javax.validation.constraints.Size;
-
-//import jakarta.persistence.*;
-//import jakarta.validation.constraints.Email;
-//import jakarta.validation.constraints.Min;
-//import jakarta.validation.constraints.NotEmpty;
-//import jakarta.validation.constraints.Size;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private long id;
     @NotEmpty(message = "Имя не может быть пустым")
     @Size(min = 2, max = 30, message = "Имя не может быть меньше 2, или больше 30 букв")
     @Column
     private String name;
+
+    @Column(name = "username")
+    @NotEmpty(message = "Username не может быть пустым")
+    private String username;
     @Min(value = 0, message = "Возраст не может быть меньше 0")
     private int age;
     @NotEmpty(message = "Email не может быть пустым")
     @Email(message = "Email указан не корректно")
     private String email;
 
+    @Column(name = "password")
+    @NotEmpty(message = "Пароль не может быть пустым")
+    @Size(min = 4, max = 70, message = "Пароль должен состоять минимум из 4 и максимум из 70 символов")
+    private String password;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<Role> roles;
+
     public User() {
     }
 
-    public User(long id, String name, int age, String email) {
-        this.id = id;
+    public User(String name, String username, int age, String email, String password, Collection<Role> roles) {
         this.name = name;
+        this.username = username;
         this.age = age;
         this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public long getId() {
@@ -76,5 +125,30 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }

@@ -23,11 +23,6 @@ public class UsersController {
         this.userService = userService;
     }
 
-//    @GetMapping("/{id}")
-//    public String getUserById(@PathVariable("id") long id, Model model) {
-//        model.addAttribute("user", userService.getUserById(id));
-//        return "myUser";
-//    }
      @GetMapping()
         public String showUserInfo(Model model, Principal principal) {
             model.addAttribute("user", userService.findByUsername(

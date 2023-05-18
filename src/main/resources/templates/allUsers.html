@@ -21,14 +21,15 @@
             <td th:text="${user.getId}"/>
             <td th:text="${user.getName}"/>
             <td th:text="${user.getAge}"/>
+            <td th:text="${user.getEmail()}"/>
             <td th:text="${user.getUsername()}"/>
             <td th:text="${user.getPassword()}"/>
             <td>
                 <a th:href="@{/admin/edit/{id}(id=${user.getId()})}">
                     <input th:type="submit" value=" Edit ">
                 </a>
-                </td>
-            <td> <form th:method="DELETE" th:action="@{{id}(id=${user.getId()})}">
+
+            <form th:method="DELETE" th:action="@{{id}(id=${user.getId()})}">
                     <input th:type="submit" value="Delete">
                 </form>
             </td>
@@ -38,4 +39,7 @@
     <a href="/admin/new">Create new user</a>
 
 </div>
+<p th:align="center">
+    <button class="button" type="button" onClick='location.href="http://localhost:8080/logout"'/>
+    Log out</button> </p>
 </body>

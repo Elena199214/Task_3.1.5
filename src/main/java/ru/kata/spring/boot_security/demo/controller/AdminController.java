@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.repositiries.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
@@ -13,7 +14,6 @@ import javax.validation.Valid;
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
-
 
     public AdminController(UserService userService) {
         this.userService = userService;
@@ -25,11 +25,6 @@ public class AdminController {
         return "allUsers";
     }
 
-//    @GetMapping("/{id}")
-//    public String getUserById(@PathVariable("id") long id, Model model) {
-//        model.addAttribute("user", userService.getUserById(id));
-//        return "myUser";
-//    }
 
     @GetMapping("/new")
     public String newUser(@ModelAttribute("user") User user) {

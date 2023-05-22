@@ -64,11 +64,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void update(User updateUser) {
         Optional<User> user = userRepository.findById(updateUser.getId());
         String oldPassword = "";
-        if (user.isPresent()){
-            oldPassword= user.get().getPassword();
+        if (user.isPresent()) {
+            oldPassword = user.get().getPassword();
             updateUser.setRoles(user.get().getRoles());
         }
-        if(!(oldPassword.equals(updateUser.getPassword()))){
+        if (!(oldPassword.equals(updateUser.getPassword()))) {
             updateUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         }
         userRepository.save(updateUser);
@@ -76,13 +76,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByEmail(username);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException(String.format("User %s doesn't exists", username)));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException(String.format("User %s doesn't exists", email)));
         return user;
     }
 }

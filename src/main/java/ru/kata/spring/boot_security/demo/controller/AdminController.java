@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,47 +20,38 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping("/allUsers")
-    public String users(Model model) {
+    @GetMapping()
+    public String users(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", user);
+        model.addAttribute("allRoles", userService.getAllRoles());
         model.addAttribute("allUsers", userService.getAllUsers());
-        return "allUsers";
-    }
 
-
-    @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "new";
+        return "admin";
     }
 
     @PostMapping
-    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "new";
-        }
+    public String create(@ModelAttribute("user") @Valid User user) {
+
         userService.save(user);
-        return "redirect:/admin/allUsers";
+        return "redirect:/admin";
     }
 
-    @GetMapping("/edit/{id}")
-    public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "edit";
-    }
+//    @GetMapping("/edit/{id}")
+//    public String edit(Model model, @PathVariable("id") long id) {
+//        model.addAttribute("user", userService.getUserById(id));
+//        return "edit";
+//    }
 
-    @PatchMapping("/edit/{id}")
-    public String update(@ModelAttribute("user") @Valid User user,
-                         BindingResult bindingResult, @PathVariable("id") long id) {
-        if (bindingResult.hasErrors()){
-            return "edit";
-        }
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("user") @Valid User user, @PathVariable("id") long id) {
         userService.update(user);
-        return "redirect:/admin/allUsers";
+        return "redirect:/admin";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") long id) {
         userService.removeUserById(id);
-        return "redirect:/admin/allUsers";
+        return "redirect:/admin";
     }
 
 }

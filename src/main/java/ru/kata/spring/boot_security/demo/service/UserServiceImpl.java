@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositiries.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositiries.UserRepository;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.addUserRole(roleRepository.getById(2L));
+       //user.addUserRole(roleRepository.getById(2L));
         userRepository.save(user);
     }
 
@@ -64,19 +65,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void update(User updateUser) {
         Optional<User> user = userRepository.findById(updateUser.getId());
         String oldPassword = "";
-        if (user.isPresent()) {
+            if (user.isPresent()) {
             oldPassword = user.get().getPassword();
-            updateUser.setRoles(user.get().getRoles());
-        }
+            if(updateUser.getRoles()==null){
+            updateUser.setRoles(user.get().getRoles());}
+       }
         if (!(oldPassword.equals(updateUser.getPassword()))) {
             updateUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         }
+//        if(updateUser.getRoles()== null){
+//            updateUser.setRoles(user.get().getRoles());
+//        } else {
+//            updateUser.getRoles();
+//        }
         userRepository.save(updateUser);
     }
 
+
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByEmail(username);
+    public Optional<User> findByUsername(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
     }
 
     @Override

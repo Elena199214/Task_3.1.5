@@ -27,9 +27,12 @@ public class User implements UserDetails {
     @Column
     private String name;
 
-    @Column(name = "username")
-    @NotEmpty(message = "Username не может быть пустым")
-    private String username;
+
+    @NotEmpty(message = "LastName не может быть пустым")
+    @Size(min = 2, max = 30, message = "Имя не может быть меньше 2, или больше 30 букв")
+    @Column
+    private String lastName;
+
     @Min(value = 0, message = "Возраст не может быть меньше 0")
     private int age;
     @NotEmpty(message = "Email не может быть пустым")
@@ -38,7 +41,7 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     @NotEmpty(message = "Пароль не может быть пустым")
-    @Size(min = 4, max = 70, message = "Пароль должен состоять минимум из 4 и максимум из 70 символов")
+    @Size(min = 3, max = 70, message = "Пароль должен состоять минимум из 4 и максимум из 70 символов")
     private String password;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
@@ -49,9 +52,10 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String username, int age, String email, String password, Set<Role> roles) {
+    public User(String name, String lastName, int age, String email, String password, Set<Role> roles) {
         this.name = name;
-        this.username = username;
+        this.lastName = lastName;
+
         this.age = age;
         this.email = email;
         this.password = password;
@@ -63,9 +67,6 @@ public class User implements UserDetails {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     @Override
     public String getPassword() {
@@ -74,8 +75,9 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return null;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -113,6 +115,14 @@ public class User implements UserDetails {
         this.name = name;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public int getAge() {
         return age;
     }
@@ -147,13 +157,16 @@ public class User implements UserDetails {
         }
         this.roles.add(role);
     }
+    public String getAllRolesAsString() {
+        return getRoles().toString().replaceAll("\\[", "").replaceAll("\\]","");
+    }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", username='" + username + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

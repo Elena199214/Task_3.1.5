@@ -20,6 +20,10 @@ public class Role implements GrantedAuthority {
         this.role = role;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     public Role() {
 
     }
@@ -38,8 +42,16 @@ public class Role implements GrantedAuthority {
     }
 
     @Override
+    public String toString() {
+        return role;
+    }
+
+    @Override
     public String getAuthority() {
         return  ROLE_PREFIX+role;
+    }
+    public String getAuthorityWithoutPrefix(){
+        return role;
     }
 
 }

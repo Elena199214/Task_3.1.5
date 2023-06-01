@@ -24,14 +24,19 @@ public class User implements UserDetails {
     private long id;
     @NotEmpty(message = "Имя не может быть пустым")
     @Size(min = 2, max = 30, message = "Имя не может быть меньше 2, или больше 30 букв")
-    @Column
-    private String name;
+    @Column(name = "first_name")
+    private String firstName;
 
 
     @NotEmpty(message = "LastName не может быть пустым")
     @Size(min = 2, max = 30, message = "Имя не может быть меньше 2, или больше 30 букв")
-    @Column
+    @Column(name = "last_name")
     private String lastName;
+
+
+    @Column(name = "username")
+    @NotEmpty(message = "Username не может быть пустым")
+    private String username;
 
     @Min(value = 0, message = "Возраст не может быть меньше 0")
     private int age;
@@ -52,14 +57,26 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String lastName, int age, String email, String password, Set<Role> roles) {
-        this.name = name;
+    public User(String firstName, String lastName, String username, int age, String email, String password, Set<Role> roles) {
+        this.firstName = firstName;
         this.lastName = lastName;
-
+        this.username = username;
         this.age = age;
         this.email = email;
         this.password = password;
         this.roles = roles;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -75,7 +92,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
 
@@ -105,14 +122,6 @@ public class User implements UserDetails {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getLastName() {
@@ -165,8 +174,9 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

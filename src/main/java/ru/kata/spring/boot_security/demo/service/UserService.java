@@ -20,6 +20,5 @@ public interface UserService {
 
     void update(User user);
     Optional<User> findByUsername(String username);
-    List<Role> getAllRoles();
 }
 

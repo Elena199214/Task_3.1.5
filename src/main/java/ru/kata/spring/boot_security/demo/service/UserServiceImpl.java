@@ -38,7 +38,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-       //user.addUserRole(roleRepository.getById(2L));
+       if(user.getRoles()==null){
+       user.addUserRole(roleRepository.getById(2L));}
+
         userRepository.save(user);
     }
 
@@ -73,11 +75,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!(oldPassword.equals(updateUser.getPassword()))) {
             updateUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         }
-//        if(updateUser.getRoles()== null){
-//            updateUser.setRoles(user.get().getRoles());
-//        } else {
-//            updateUser.getRoles();
-//        }
+
         userRepository.save(updateUser);
     }
 
@@ -87,10 +85,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    @Override
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
-    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

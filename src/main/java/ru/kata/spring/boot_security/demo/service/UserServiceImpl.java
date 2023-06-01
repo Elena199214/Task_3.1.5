@@ -38,8 +38,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-       if(user.getRoles()==null){
-       user.addUserRole(roleRepository.getById(2L));}
 
         userRepository.save(user);
     }
@@ -87,9 +85,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException(String.format("User %s doesn't exists", email)));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username).orElseThrow(() ->
+                new UsernameNotFoundException(String.format("User %s doesn't exists", username)));
         return user;
     }
 }

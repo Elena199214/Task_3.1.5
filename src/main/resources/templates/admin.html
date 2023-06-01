@@ -28,9 +28,9 @@
             <div class="container-fluid justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
                     <div sec:authorize="isAuthenticated()" th:align="center">
-                        <b><span sec:authentication="principal.getUsername()">Username</span></b>
+                        <b><span sec:authentication="principal.username">Username</span></b>
                         with roles:
-                        <i><span sec:authentication="principal.getAuthorities()">Roles</span></i>
+                        <i><span sec:authentication="principal.authorities">Roles</span></i>
                     </div>
                 </div>
                 <div>
